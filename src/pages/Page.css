@@ -1,0 +1,26 @@
+section {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 600px;
+	width: 100vw;
+	margin: 4em 0;
+}
+
+section:nth-child(even) {
+	flex-direction: row-reverse;
+}
+
+section img,
+section div {
+	height: 100%;
+	width: auto;
+}
+
+section div {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	padding: 1em;
+}

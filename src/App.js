@@ -1,25 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
+import { Nav } from './nav';
+import { Main } from './pages';
+import IntersectionProvider from './context/intersectionContext';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<IntersectionProvider>
+			<div className='appContainer'>
+				<Nav />
+				<Main />
+			</div>
+		</IntersectionProvider>
+	);
 }
 
 export default App;
