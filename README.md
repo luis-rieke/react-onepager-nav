@@ -12,4 +12,40 @@ There are two kinds of user navigation we'd like to support.
 
 User story #1 seems straight-forward: we can hang a `ref` on whichever container we'd like to navigate to in our single-page and use the Element interface's `scrollIntoView()` method to move that container into the viewport when the corresponding `nav` element is clicked. User story #2 isn't quite as clear-cut, and its central problem might not immediately be apparent in user story #1, but it's lurking under the surface -- how will our nav elements <strong>know</strong> which container is currently in the viewport, and how will we pass this information up the food chain so that nav elements can be rendered accordingly?
 
-Whenever
+If we didn't have to worry about the nav bar <em>responding</em> to the user's position in our site, we could simply apply an `activeClass` alongside our `scrollIntoView` call by storing the elementId in the Nav component's local state:
+
+```javascript
+// store an array of objects containing navLinkId, scrollToId
+// use these to map and generate NavLink components in our Nav parent component
+const navLinks = [
+  {navLinkId: 'Home', scrollToId: 'homeContainer'},
+  ...
+]
+
+const NavLink = ({ navLinkId, scrollToId }) => {
+	return (
+		<span id={navLinkId} onClick={() => handleNavClick(navLinkId, scrollToId)}>
+			{navLinkId}
+		</span>
+	);
+};
+
+const Nav = () => {
+	// set the activeElement the clicked elementId
+	const [activeNavLinkId, setActiveNavLinkId] = useState('');
+
+	// handleNavClick takes an elementId
+	const handleNavClick = (navLinkId, scrollToId) => {
+		setActiveElement(navLinkId);
+		document.getElementById(scrollToId).scrollIntoView({
+			behavior: 'smooth', // gives an ease-in-out effect to our scroll
+		});
+	};
+
+  return (
+    <nav>
+    {navLinks.map(({navLinkId, scrollToId}) => <NavLink navLinkId={navLinkId} scrollToId={scrollToId}/>)}
+    </nav>
+  )
+};
+```
