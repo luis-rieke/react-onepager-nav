@@ -3,7 +3,7 @@ nav {
 	position: sticky;
 	z-index: 10;
 	top: 0;
-	padding: 0.9em 0 1.2em 0;
+	padding: 1.2em 0;
 	color: white;
 	background-color: var(--darkAccent);
 	max-height: 4em;
