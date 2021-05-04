@@ -295,3 +295,11 @@ nav span {
 	padding-bottom: 0.3em;
 }
 ```
+
+## Tuning the observer threshold
+
+If we find a nav element isn't responding to scroll cues, especially if we change direction mid-element -- for example, we've scrolled partway up an element, only to double back and cross past again -- we've found a good opportunity to adjust our `threshold` options array. By including additional breakpoint values in our `useOnScreen` hook, we can dial-up the sensitivity to intersection ratios, or how much of the navigable element has crossed the browser viewport <em>threshold</em>.
+
+## Done!
+
+And that's it! We've got an extensible single-page-navigation system enabled by React, React Context, and React Custom Hooks. Remember -- custom hooks are just functions that compose standard hooks to encapsulate business logic and provide a clean, minimal interface to do work in our components. Whenever you find yourself writing repetitious sequences of hooks in your components, see if you can abstract the details away and give the developer a plug-and-play API like `useNav`!
