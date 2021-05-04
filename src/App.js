@@ -1,7 +1,7 @@
-import './App.css';
 import { Nav } from './nav';
 import { Main } from './pages';
 import NavProvider from './context/NavContext';
+import './App.css';
 
 function App() {
 	return (

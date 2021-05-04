@@ -166,5 +166,83 @@ export const useNav = navLinkId => {
 Now to roll-out our hook and have some fun! First, we'll wrap the contents of our top-level `App` component in our `NavProvider`.
 
 ```javascript
+import { Nav } from './nav';
+import { Main } from './pages';
+import NavProvider from './context/NavContext';
+import './App.css';
 
+function App() {
+	return (
+		<div className='appContainer'>
+			<NavProvider>
+				<Nav />
+				<Main />
+			</NavProvider>
+		</div>
+	);
+}
+
+export default App;
 ```
+
+Our `Nav` component gets a little slimmer -- since we've transferred the management of our `activeNavLinkId` to `NavContext`, we can remove our local state handler -- and we'll move our `NavLink` component to a separate file for better modularization. In this new file, we'll access `NavContext`'s state via `useContext`, and use its updater function to refactor our click handler.
+
+```javascript
+import React, { useContext } from 'react';
+import { NavContext } from '../context/NavContext';
+
+const NavLink = ({ navLinkId, scrollToId }) => {
+	// activeNavLinkId is the nav element that should receive activeClass styling
+	const { activeNavLinkId, setActiveNavLinkId } = useContext(NavContext);
+
+	// vertical scroll takes a classSelector === .sectionName
+	const scrollToSection = elementId =>
+		document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' });
+
+	// onClick, nav elements set the activeNavLinkId on NavContext
+	// and scroll to their corresponding selector + element in the DOM
+	const handleClick = () => {
+		setActiveNavLinkId(navLinkId);
+		scrollToSection(scrollToId);
+	};
+
+	// each NavLink uses its navLinkId as its content
+	return (
+		<span
+			id={navLinkId}
+			className={activeNavLinkId === navLinkId ? 'activeClass' : ''}
+			onClick={handleClick}
+		>
+			{navLinkId}
+		</span>
+	);
+};
+```
+
+```javascript
+import React from 'react';
+import NavLink from './NavLink';
+import { navLinks } from './navLinks';
+import './Nav.css';
+
+/*
+ *		each entry in our navLinks array is an object structured:
+ *
+ *		{
+ *			navLinkId: string -> id of NavLink container,
+ *			scrollToId: string -> id of Page container to scroll to onClick
+ *		}
+ */
+
+const Nav = () => {
+	return (
+		<nav>
+			{navLinks.map(({ navLinkId, scrollToId }, idx) => (
+				<NavLink key={idx} navLinkId={navLinkId} scrollToId={scrollToId} />
+			))}
+		</nav>
+	);
+};
+```
+
+Now, in each component we'd like to make a scrollable target, we'll return a `containerRef` from `useNav` and

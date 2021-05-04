@@ -4,7 +4,7 @@ import { navLinks } from './navLinks';
 import './Nav.css';
 
 /*
- *		each navLink is an object structured:
+ *		each entry in our navLinks array is an object structured:
  *
  *		{
  *			navLinkId: string -> id of NavLink container,
