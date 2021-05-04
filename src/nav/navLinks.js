@@ -1,5 +1,5 @@
 export const navLinks = [
-	{ nodeId: 'Home', selector: '.homeContainer' },
-	{ nodeId: 'About', selector: '.aboutContainer' },
-	{ nodeId: 'Contact', selector: '.contactContainer' },
+	{ navLinkId: 'Home', scrollToId: 'homeContainer' },
+	{ navLinkId: 'About', scrollToId: 'aboutContainer' },
+	{ navLinkId: 'Contact', scrollToId: 'contactContainer' },
 ];

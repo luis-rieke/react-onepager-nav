@@ -1,31 +1,29 @@
 import React, { useContext } from 'react';
-import { IntersectionContext } from '../context/intersectionContext';
+import { NavContext } from '../context/NavContext';
 
-const NavLink = ({ nodeId, selector }) => {
-	// activeNodeId is the nav element that should receive activeClass styling
-	const { activeNodeId, setActiveNodeId } = useContext(IntersectionContext);
+const NavLink = ({ navLinkId, scrollToId }) => {
+	// activeNavLinkId is the nav element that should receive activeClass styling
+	const { activeNavLinkId, setActiveNavLinkId } = useContext(NavContext);
 
 	// vertical scroll takes a classSelector === .sectionName
-	const scrollToSection = classSelector =>
-		document
-			.querySelector(classSelector)
-			.scrollIntoView({ behavior: 'smooth' });
+	const scrollToSection = elementId =>
+		document.getElementById(elementId).scrollIntoView({ behavior: 'smooth' });
 
-	// onClick, nav elements set the activeNodeId on IntersectionContext
+	// onClick, nav elements set the activeNavLinkId on NavContext
 	// and scroll to their corresponding selector + element in the DOM
 	const handleClick = () => {
-		setActiveNodeId(nodeId);
-		scrollToSection(selector);
+		setActiveNavLinkId(navLinkId);
+		scrollToSection(scrollToId);
 	};
 
-	// each NavLink uses its nodeId as its content
+	// each NavLink uses its navLinkId as its content
 	return (
 		<span
-			id={nodeId}
-			className={activeNodeId === nodeId ? 'activeClass' : ''}
+			id={navLinkId}
+			className={activeNavLinkId === navLinkId ? 'activeClass' : ''}
 			onClick={handleClick}
 		>
-			{nodeId}
+			{navLinkId}
 		</span>
 	);
 };

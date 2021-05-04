@@ -1,21 +1,23 @@
 import { useRef, useContext, useEffect } from 'react';
 import { useOnScreen } from './useOnScreen';
-import { IntersectionContext } from '../context/intersectionContext';
+import { NavContext } from '../context/NavContext';
 
-/* useNav takes a nodeId and returns a ref that can be used to navigate to the ref's element in a single-page scrollable site */
+// useNav takes a navLinkId and returns a ref
+// this ref can be used to navigate to the ref
+// in a single-page scrollable site
 
-export const useNav = nodeId => {
+export const useNav = navLinkId => {
 	const ref = useRef(null);
 
-	const { setActiveNodeId } = useContext(IntersectionContext);
+	const { setActiveNavLinkId } = useContext(NavContext);
 
 	const isOnScreen = useOnScreen(ref);
 
 	useEffect(() => {
 		if (isOnScreen) {
-			setActiveNodeId(nodeId);
+			setActiveNavLinkId(navLinkId);
 		}
-	}, [isOnScreen, setActiveNodeId, nodeId]);
+	}, [isOnScreen, setActiveNavLinkId, navLinkId]);
 
 	return ref;
 };

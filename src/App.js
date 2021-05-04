@@ -1,7 +1,7 @@
 import './App.css';
 import { Nav } from './nav';
 import { Main } from './pages';
-import IntersectionProvider from './context/intersectionContext';
+import IntersectionProvider from './context/NavContext';
 
 function App() {
 	return (

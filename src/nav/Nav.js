@@ -3,16 +3,20 @@ import NavLink from './NavLink';
 import { navLinks } from './navLinks';
 import './Nav.css';
 
-// Nav maps imported navLinks array
-// each navLink is an object:
-// { nodeId: string, selector: string (CSS className selector) }
-// where CSS className selector is written ".exampleCSSSelector"
+/*
+ *		each navLink is an object structured:
+ *
+ *		{
+ *			navLinkId: string -> id of NavLink container,
+ *			scrollToId: string -> id of Page container to scroll to onClick
+ *		}
+ */
 
 const Nav = () => {
 	return (
 		<nav>
-			{navLinks.map(({ nodeId, selector }, idx) => (
-				<NavLink key={idx} nodeId={nodeId} selector={selector} />
+			{navLinks.map(({ navLinkId, scrollToId }, idx) => (
+				<NavLink key={idx} navLinkId={navLinkId} scrollToId={scrollToId} />
 			))}
 		</nav>
 	);
