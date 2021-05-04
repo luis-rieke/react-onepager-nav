@@ -58,7 +58,7 @@ Hooray! We've fulfilled user story #1. So by the `Pareto Principle` we know that
 
 ## Dude, where's my user?
 
-Keeping tabs on the user's whereabouts shouldn't be too difficult given that we've got an imperative handle (our `containerRefs`) to each of our navigable targets. The `IntersectionObserver` API gives us a neat way of determining what element is currently in the user's viewport:
+Keeping tabs on the user's whereabouts shouldn't be too difficult: we've got an imperative handle (the `containerRef`) to each of our navigable targets that we can leverage to determine if the corresponding container is visible. We'll make this happen with the `IntersectionObserver` API, which will allow us to create an intersection <em>observer</em> to notify us when -- and importantly, to what extent -- its observable target enters user's viewport.
 
 ```javascript
   const options = {
@@ -68,4 +68,103 @@ Keeping tabs on the user's whereabouts shouldn't be too difficult given that we'
   }
 
   const observer = new IntersectionObserver(callback, options)
+```
+
+An `IntersectionObserver` instance takes a callback function and an options object consisting of:
+
+1. a `root element` that will allow us to compare the position of our possibly-intersecting `containerRef` to an element or (if left unspecified) the browser viewport,
+
+2. a `rootMargin` (written as a stringified CSS margin property) that will allow us to expand or contract the footprint of our `root element`'s bounding box before computing intersections, and
+
+3. a `threshold` value (or array of values) between 0.0 - 1.0, which will help us calibrate the sensitivity of our observer by setting breakpoints as a function of the intersecting element's total area.
+
+We'll leave `root element` and `rootMargin` to their default values -- we'd simply like to detect if a vertically-stacked container has entered the user's viewable page area, and the browser viewport with default margins of 0px will do the job -- but we may need to (eventually) calibrate our `threshold`.
+
+The callback we'll pass to our observer receives an `entries` array and the `observer` instance. The `entries` array is a collection of `IntersectionObserverEntry` instances that hook into various properties of the relationship between the intersecting element and our `root element`. We'll use the `entry.isIntersecting` boolean to register our `containerRef`.
+
+Great! We've solved a key issue related to fulfilling user story #2: when our user scrolls, we'll be able to track elements as they enter the viewport. Let's build a custom hook to create each `containerRef` and an associated `IntersectionObserver` instance. All credit goes to StackOverflow user (Creaforge)[https://stackoverflow.com/users/3013279/creaforge?tab=profile] for building a custom hook for just this purpose!
+
+```javascript
+import { useState, useEffect } from 'react';
+
+export const useOnScreen = ref => {
+	const [isOnScreen, setOnScreen] = useState(false);
+
+	const observer = new IntersectionObserver(
+		([entry]) => setOnScreen(entry.isIntersecting),
+		{
+			threshold: [0.25, 0.5, 0.75],
+		}
+	);
+
+	useEffect(() => {
+		observer.observe(ref.current);
+		return () => {
+			observer.disconnect();
+		};
+	});
+
+	return isOnScreen;
+};
+```
+
+Let's compose `useOnScreen` to create a custom hook, `useNav`, which will allow us to generate and return an observed `containerRef` whose ref.current.id will be registered on a `NavProvider` accessed via `useContext`!
+
+As an aside -- if you're a little unsure of your footing with React Context API, please check out my article (Rebuilding an Imperatively-Coded Game from Scratch in React)[https://medium.com/geekculture/rebuilding-an-imperatively-coded-game-from-scratch-in-react-9a082ad002c0] where I lay out a good general strategy for implementing React Contexts, a lightweight alternative to Redux that helps compartmentalize and manage pieces of state.
+
+Our `NavContext` consists of a `Context` instance generated with `React.createContext()`, and a NavProvider that gives our `useNav` hook access to an updater function that we'll use to set the `activeNavLinkId` that was previously handled by our `Nav` component.
+
+But wait! Why reinvent the wheel? We've already got local state management, and all we'd need to do is modify our `useNav` hook to accept `setActiveNavLinkId` by passing it to each component that we'd like to register for observation. The two solutions are quite similar, and it seems to be a matter of preference.
+
+In this case I've chosen to go with a `NavProvider` as it'll let us encapsulate <strong>all of our Context logic</strong> in `useNav`, which will give us a more maintainable codebase. (All things equal, it's best to prioritize <em>maintainability</em> over brevity...)
+
+```javascript
+import React, { useState } from 'react';
+
+export const NavContext = React.createContext();
+
+const NavProvider = ({ children }) => {
+	const [activeNavLinkId, setActiveNavLinkId] = useState('');
+
+	const providerValue = {
+		activeNavLinkId,
+		setActiveNavLinkId,
+	};
+
+	return (
+		<NavContext.Provider value={providerValue}>{children}</NavContext.Provider>
+	);
+};
+```
+
+```javascript
+import { useRef, useContext, useEffect } from 'react';
+import { useOnScreen } from './useOnScreen';
+import { NavContext } from '../context/NavContext';
+
+// useNav takes a navLinkId and returns a ref
+// this ref can be used to navigate to the ref
+// in a single-page scrollable site
+
+export const useNav = navLinkId => {
+	const ref = useRef(null);
+
+	const { setActiveNavLinkId } = useContext(NavContext);
+
+	const isOnScreen = useOnScreen(ref);
+
+	useEffect(() => {
+		if (isOnScreen) {
+			setActiveNavLinkId(navLinkId);
+		}
+	}, [isOnScreen, setActiveNavLinkId, navLinkId]);
+
+	return ref;
+};
+```
+
+Now to roll-out our hook and have some fun! First, we'll wrap the contents of our top-level `App` component in our `NavProvider`.
+
+```javascript
+
 ```
