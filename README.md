@@ -245,4 +245,53 @@ const Nav = () => {
 };
 ```
 
-Now, in each component we'd like to make a scrollable target, we'll return a `containerRef` from `useNav` and
+Now, in each component we'd like to make a scrollable target, we'll feed the `scrollToId` to our `useNav` hook and receive a `containerRef` that we'll hang on each scroll target element. Since we've separated concerns, `useNav` is blind to its implementation -- we can make any element we like a scrollable navigation target that will respond to direct navigation via clicks, register "passive" navigation whenever a scroll target appears in our browser viewport <em>and</em> syncs up with our `IntersectionObserver` instance's `threshold` value(s), and reflect the current navigable component with an `activeClass` applied to the corresponding `NavLink`!
+
+```javascript
+import React from 'react';
+import { useNav } from '../customHooks/useNav';
+import './Page.css';
+
+const Home = () => {
+	// useNav takes in a navLinkId and returns a ref
+	// this ref is used to register the navLinkId that's
+	// currently in view, and apply activeClass styling
+	// to the corresponding nav childElement
+
+	const homeRef = useNav('Home');
+
+	return (
+		<section ref={homeRef} id='homeContainer'>
+			<img
+				src='https://source.unsplash.com/random/600x600/?nature,water'
+				alt='unsplash-img'
+			/>
+			<div>
+				<h3>HOME</h3>
+				<p>This is the home section</p>
+			</div>
+		</section>
+	);
+};
+```
+
+By encapsulating all of the logic we use to watch components and inform our nav component, we've arrived at a plug-and-play solution for single-page-navigation whose <strong>interface</strong> has a minimal surface area! In the long-run, compartmentalizing our business logic in this way will allow us to easily add, remove, and shuffle elements in our component hierarchy. And, our `NavContext` is really just a specific implementation of a more general `IntersectionContext` that could include other intersection-related user stories like lazy-loading content.
+
+## Quashing false navigation cues
+
+One last interesting bug in our single-page-navigation project -- how do we prevent the user from seeing "false" navigation cues when we click-navigate to a remote ie. non-adjacent component from where we currently are?
+
+`gif of false navigation cues`
+
+CSS to the rescue! We'll assign a `transition-delay` to mask navLink instances that receive `activeStyling` as our `scrollToSection()` method rolls the user past components -- this cancels out the effect of our `useNav` hook and provides a better UX, since it's quite jarring to click a link and see other nav links light up.
+
+```css
+nav span {
+	font-size: 18px;
+	border-bottom: 1px solid transparent;
+	transition: border-bottom 0.2s ease;
+	transition-delay: 0.25s;
+	margin: 1em;
+	padding-bottom: 0.3em;
+}
+```
