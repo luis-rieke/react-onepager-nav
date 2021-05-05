@@ -13,8 +13,8 @@ section:nth-child(even) {
 
 section img,
 section div {
-	height: 100%;
-	width: auto;
+	height: auto;
+	width: 100%;
 }
 
 section div {
@@ -23,4 +23,11 @@ section div {
 	align-items: center;
 	justify-content: flex-start;
 	padding: 1em;
+}
+
+@media screen and (max-width: 400px) {
+	section,
+	section:nth-child(even) {
+		flex-direction: column;
+	}
 }
