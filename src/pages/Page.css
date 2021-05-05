@@ -2,9 +2,9 @@ section {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 600px;
-	width: 100vw;
-	margin: 4em 0;
+	height: 100vh;
+	width: 100%;
+	border-bottom: 1px solid lightgrey;
 }
 
 section:nth-child(even) {
@@ -17,6 +17,10 @@ section div {
 	width: 100%;
 }
 
+section img {
+	max-width: 50%;
+}
+
 section div {
 	display: flex;
 	flex-direction: column;
@@ -25,7 +29,7 @@ section div {
 	padding: 1em;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 900px) {
 	section,
 	section:nth-child(even) {
 		flex-direction: column;
