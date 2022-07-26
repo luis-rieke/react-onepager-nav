@@ -1,5 +1,5 @@
-# Single-Page Scrollable Site with Responsive Nav Bar
+# Onepager Scrollable Site with Nav Bar
 
-Read the article here! [Link to Article](https://medium.com/geekculture/scrollable-single-page-site-navigation-with-react-custom-hooks-4e7af716f6b1)
+Needed this little project to jump to elements on the page.
 
-This project is bootstrapped with `create-react-app`.
+Credits to [shapirodaniel](https://github.com/shapirodaniel) and his [article](https://medium.com/geekculture/scrollable-single-page-site-navigation-with-react-custom-hooks-4e7af716f6b1)
